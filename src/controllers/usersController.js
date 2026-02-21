@@ -7,7 +7,7 @@ export const getUsers = async (req, res) => {
 
   const skip = (page - 1) * perPage;
 
-  const usersQuery = User.find();
+  const usersQuery = User.find({ userId: req.user._id });
 
   // Виконуємо одразу два запити паралельно
   const [totalItems, users] = await Promise.all([
@@ -30,11 +30,20 @@ export const getUsers = async (req, res) => {
 //юзери по id
 export const getUserById = async (req, res) => {
   const { userId } = req.params;
-  const user = await User.findById(userId);
+  const user = await User.findById({ _id: userId, userId: req.user._id });
 
   if (!user) {
     throw createHttpError(404, 'Student not found');
   }
 
   res.status(200).json(user);
+};
+
+export const createStudent = async (req, res) => {
+  const user = await User.create({
+    ...req.body,
+    userId: req.user._id,
+  });
+
+  res.status(201).json(user);
 };

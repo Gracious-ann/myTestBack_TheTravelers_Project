@@ -7,16 +7,20 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import userRoutes from './routes/usersRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import storiesRoutes from './routes/storiesRouter.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(logger);
 app.use(express.json());
 app.use(cors()); // Дозволяє запити з будь-яких джерел
+app.use(cookieParser()); // Кукі
 
 // Використовуємо значення з .env або дефолтний порт 3000
 const PORT = process.env.PORT ?? 3000;
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(storiesRoutes);
 
 // 404 — якщо маршрут не знайдено
 app.use(notFoundHandler);
